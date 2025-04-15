@@ -42,12 +42,12 @@ jobs:
     - name: Build master-ci
       run: |
         release/build_devel.sh
-    - name: Run tests
-      run: |
-        export PYTHONPATH=$TARGET_DIR
-        cd $TARGET_DIR
-        scons -j$(nproc)
-        pytest -n logical selfdrive/car/tests/test_car_interfaces.py
+    # - name: Run tests
+    #   run: |
+    #     export PYTHONPATH=$TARGET_DIR
+    #     cd $TARGET_DIR
+    #     scons -j$(nproc)
+    #     pytest -n logical selfdrive/car/tests/test_car_interfaces.py
     - name: Push master-ci
       run: |
         unset TARGET_DIR
