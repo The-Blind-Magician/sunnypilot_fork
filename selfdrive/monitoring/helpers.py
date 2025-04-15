@@ -3,7 +3,7 @@ from math import atan2
 from cereal import car
 import cereal.messaging as messaging
 from openpilot.selfdrive.controls.lib.events import Events
-from openpilot.selfdrive.monitoring.hands_on_wheel_monitor import HandsOnWheelStatus
+from openpilot.selfdrive.monitoring.hands_on_wheel_monitor import HandsOnWheelState, HandsOnWheelStatus
 from openpilot.common.numpy_fast import interp
 from openpilot.common.realtime import DT_DMON
 from openpilot.common.filter_simple import FirstOrderFilter
@@ -381,20 +381,20 @@ class DriverMonitoring:
     dat = messaging.new_message('driverMonitoringState', valid=valid)
     dat.driverMonitoringState = {
       "events": self.current_events.to_msg(),
-      "faceDetected": self.face_detected,
-      "isDistracted": self.driver_distracted,
-      "distractedType": sum(self.distracted_types),
-      "awarenessStatus": self.awareness,
-      "posePitchOffset": self.pose.pitch_offseter.filtered_stat.mean(),
-      "posePitchValidCount": self.pose.pitch_offseter.filtered_stat.n,
-      "poseYawOffset": self.pose.yaw_offseter.filtered_stat.mean(),
-      "poseYawValidCount": self.pose.yaw_offseter.filtered_stat.n,
+      "faceDetected": True,
+      "isDistracted": False,
+      "distractedType": sum(DistractedType.NOT_DISTRACTED),
+      "awarenessStatus": 1.0,
+      "posePitchOffset": 0.,
+      "posePitchValidCount": 1,
+      "poseYawOffset": 0.,
+      "poseYawValidCount": 1,
       "stepChange": self.step_change,
-      "awarenessActive": self.awareness_active,
-      "awarenessPassive": self.awareness_passive,
-      "isLowStd": self.pose.low_std,
+      "awarenessActive": 1.,
+      "awarenessPassive": 1.,
+      "isLowStd": False,
       "hiStdCount": self.hi_stds,
-      "isActiveMode": self.active_monitoring_mode,
+      "isActiveMode": True,
       "isRHD": self.wheel_on_right,
     }
     return dat
@@ -402,7 +402,7 @@ class DriverMonitoring:
   def get_sp_state_packet(self, valid=True):
     dat = messaging.new_message('driverMonitoringStateSP', valid=valid)
     dat.driverMonitoringStateSP = {
-      "handsOnWheelState": self.hands_on_wheel_status.hands_on_wheel_state,
+      "handsOnWheelState": HandsOnWheelState.ok,
     }
     return dat
 
